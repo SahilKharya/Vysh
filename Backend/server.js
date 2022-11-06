@@ -2,10 +2,11 @@ const express = require("express");
 const Web3 = require("web3");
 const Provider = require("@truffle/hdwallet-provider");
 const asyncHandler = require("express-async-handler");
-const db = require("./firebase");
 const abi = require("./abi/VyshManager");
-const axios = require('axios')
-const ethers = require('ethers');
+const fs = require("fs")
+const mime = require("mime")
+const path = require("path")
+const { NFTStorage, File, Blob } = require("nft.storage")
 
 const app = express();
 
@@ -64,6 +65,11 @@ async function storeNFT(imagePath, name, description, value) {
         description,
         value
     })
+}
+async function fileFromPath(filePath) {
+    const content = await fs.promises.readFile(filePath)
+    const type = mime.getType(filePath)
+    return new File([content], path.basename(filePath), { type })
 }
 // For example's sake, we'll fetch an image from an HTTP URL.
 // In most cases, you'll want to use files provided by a user instead.
